@@ -248,9 +248,10 @@ class analyze(object):
         XQ=np.array(([firstvar[0],secondvar[0]]))
         return N.forward(XQ)*(max_Y[0]-Y_scale)+Y_scale
 
-#Now call all the classes to perform the operations after running
-N=Neural_Network()
-T=trainer(N)
-T.train(X,Y)
-A=analyze(N)
-A.Plot3D()
+if __name__ == "__main__":
+    #Now call all the classes to perform the operations after running
+    N=Neural_Network()
+    T=trainer(N)
+    T.train(X,Y)
+    A=analyze(N)
+    A.Plot3D()
