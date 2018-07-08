@@ -7,51 +7,15 @@ import matplotlib.pyplot as plt
 from scipy import optimize
 from numpy import array
 
-#set print options for the analyzer
-float_formatter = lambda x: "%.4f" % x
-np.set_printoptions(formatter={'float_kind':float_formatter})
-
-X=[]
-Y=[]
-
-firstline=True
-for line in open('CoolPlot2.csv'):
-    if firstline:
-        firstline=False
-        l1,l2,l3=line.split(',')
-    else:
-        x1,x2,y=line.split(',')
-        X.append([float(x1),float(x2)])
-        Y.append(float(y))
-
-X=np.array(X)
-Y=np.array(Y)
-#transpose the 1D array (transpose function won't work for 1D)
-Y=Y[np.newaxis,:].T
-
-#X=np.array(([3,5],[5,1],[10,2]))
-#Y=np.array(([75],[82],[93]))
-
-#Scale our data
-max_X=np.amax(X,axis=0)
-max_Y=np.amax(Y,axis=0)
-
-Y_scale=0
-if np.amin(Y,axis=0)[0]<0:
-    Y_scale=np.amin(Y,axis=0)[0]
-
-X=X/max_X
-Y=(Y-Y_scale)/(max_Y-Y_scale)
-
 # Whole Class with additions:
 class Neural_Network(object):
-    def __init__(self):        
+    def __init__(self,inputLS=2,outputLS=1,hiddenLS=np.array([3])):        
 
         #Define Hyperparameters
-        self.inputLayerSize = 2
-        self.outputLayerSize = 1
+        self.inputLayerSize = inputLS
+        self.outputLayerSize = outputLS
 
-        self.hiddenLayerSizes=np.array([3])
+        self.hiddenLayerSizes=hiddenLS
         self.numberHiddenLayers=len(self.hiddenLayerSizes)
         
         #Weights (parameters)
@@ -249,6 +213,40 @@ class analyze(object):
         return N.forward(XQ)*(max_Y[0]-Y_scale)+Y_scale
 
 if __name__ == "__main__":
+
+    #set print options for the analyzer
+    float_formatter = lambda x: "%.4f" % x
+    np.set_printoptions(formatter={'float_kind':float_formatter})
+
+    X=[]
+    Y=[]
+
+    firstline=True
+    for line in open('CoolPlot2.csv'):
+        if firstline:
+            firstline=False
+            l1,l2,l3=line.split(',')
+        else:
+            x1,x2,y=line.split(',')
+            X.append([float(x1),float(x2)])
+            Y.append(float(y))
+
+    X=np.array(X)
+    Y=np.array(Y)
+    #transpose the 1D array (transpose function won't work for 1D)
+    Y=Y[np.newaxis,:].T
+
+    #Scale our data
+    max_X=np.amax(X,axis=0)
+    max_Y=np.amax(Y,axis=0)
+
+    Y_scale=0
+    if np.amin(Y,axis=0)[0]<0:
+        Y_scale=np.amin(Y,axis=0)[0]
+
+    X=X/max_X
+    Y=(Y-Y_scale)/(max_Y-Y_scale)
+    
     #Now call all the classes to perform the operations after running
     N=Neural_Network()
     T=trainer(N)
